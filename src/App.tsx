@@ -10,6 +10,7 @@ interface ICoin {
   platforms: {
     ethereum: string
   };
+  filtered,
 }
 
 const defaultProps:ICoin[] = [];
@@ -18,6 +19,7 @@ const App: React.SFC = () => {
   const [coins, setCoins]: [ICoin[], (coins: ICoin[]) => void] = React.useState(defaultProps);
   const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
   const [error, setError]: [string, (error: string) => void] = React.useState("");
+  const [filter, setFilter] = React.useState("all");
 
   React.useEffect(() => {
     axios
@@ -40,32 +42,52 @@ const App: React.SFC = () => {
     });
   }, []);
 
+  React.useEffect(() => {
+    setCoins([]);
+
+    const filtered = coins.map(p => ({
+      ...p,
+      filtered: Object.keys(p.platforms).includes(filter),
+    }));
+    setCoins(filtered);
+  }, [filter]);
+
   if (loading) {
     return <p>Loading...</p>
   }
 
   return (
-    <div className="App">
-     <ul className="coins">
-       <h1>{coins.length}</h1>
-       {coins.map((coin) => (
-        <li key={coin.id}>
-         <h3>{coin.symbol}</h3>
-         <p>{coin.name}</p>
-         {
-          Object.keys(coin.platforms).map((key, i) => (
-            <p key={i}>
-              <span>Key Name: {key}</span>
-              <span>Value: {coin.platforms[key]}</span>
-            </p>
-          ))
-         }
-        </li>
-      ))}
-     </ul>
-     {error && <p className="error">{error}</p>}
-   </div>
-   );
+    <>
+      <div className="portfolio__labels">
+        <a href="/#" onClick={() => setFilter("")}>
+          All
+        </a>
+        <a
+          href="/#ethereum"
+          onClick={() => setFilter("ethereum")}
+        >
+          Ethereum
+        </a>
+      </div>
+      <div className="portfolio__container">
+        {coins.map(coin =>
+          coin.filtered === true ?
+          <li key={coin.id}>
+            <h3>Symbol: {coin.symbol}</h3>
+            <p>Name: {coin.name}</p>
+            {
+              Object.keys(coin.platforms).map((key, i) => (
+                <p key={i}>
+                  <span>Platfrom: {key}</span>
+                </p>
+              ))
+            }
+            </li>
+          : ""
+        )}
+      </div>
+    </>
+  );
 };
 
 export default App;
