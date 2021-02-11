@@ -118,7 +118,7 @@ const App: React.SFC = () => {
               All Coins
             </button>
           </a>
-          <a href="/ethereum" onClick={() => setFilter("ethereum")}>
+          <a href="/#ethereum" onClick={() => setFilter("ethereum")}>
             <button type="button" className="btn btn-secondary">
               Coins on Ethereum Platform
             </button>
@@ -126,7 +126,7 @@ const App: React.SFC = () => {
         </div>
         <div className="portfolio__container">
           {
-            window.location.pathname !== "/ethereum" ?
+            window.location.hash !== "#ethereum" ?
               <p>Coins on ethereum platform: {Math.round(coins.filter(p => Object.keys(p.platforms).includes("ethereum")).length / filteredCoins.length * 100)}%</p>
             : ""
           }
