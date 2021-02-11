@@ -85,7 +85,7 @@ const App: React.SFC = () => {
       <div className="portfolio__container">
         {
           window.location.pathname !== "/ethereum" ?
-            <p>Percentage coins on ethereum platform: {Math.round(coins.filter(p => Object.keys(p.platforms).includes("ethereum")).length / filteredCoins.length * 100)}%</p>
+            <p>Coins on ethereum platform: {Math.round(coins.filter(p => Object.keys(p.platforms).includes("ethereum")).length / filteredCoins.length * 100)}%</p>
           : ""
         }
         {filteredCoins.map(coin =>
