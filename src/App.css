@@ -2,6 +2,31 @@
   text-align: center;
 }
 
+.portfolio__header {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.portfolio__container {
+  margin-top: 3vw;
+}
+
+.coinlist-wrapper {
+  max-width: 95vw;
+  padding: 5vw 0;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.table thead tr th {
+  vertical-align: middle;
+}
+
+table thead tr th:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

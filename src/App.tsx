@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 
 interface ICoin {
   id: number;
@@ -30,6 +35,41 @@ const App: React.SFC = () => {
   const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
   const [error, setError]: [string, (error: string) => void] = React.useState("");
   const [filter, setFilter] = React.useState("all");
+  const columns = [{
+      dataField: 'id',
+      text: 'ID'
+    },
+    {
+      dataField: 'symbol',
+      text: "SYMBOL",
+      filter: textFilter("")
+    },
+    {
+      dataField: 'name',
+      text: 'NAME',
+      sort: true
+    },
+  ];
+  const options = {
+    paginationSize: 15,
+    pageStartIndex: 0,
+    firstPageText: 'First',
+    prePageText: 'Back',
+    nextPageText: 'Next',
+    lastPageText: 'Last',
+    nextPageTitle: 'First page',
+    prePageTitle: 'Pre page',
+    firstPageTitle: 'Next page',
+    lastPageTitle: 'Last page',
+    sizePerPageList: [
+      {
+        text: 'show 15', value: 15
+      },
+      {
+        text: 'show 30', value: 30
+      }
+    ]
+  };
 
   React.useEffect(() => {
     axios
@@ -71,36 +111,33 @@ const App: React.SFC = () => {
 
   return (
     <>
-      <div className="portfolio__labels">
-        <a href="/#" onClick={() => setFilter("")}>
-          All
-        </a>
-        <a
-          href="/ethereum"
-          onClick={() => setFilter("ethereum")}
-        >
-          Ethereum
-        </a>
-      </div>
-      <div className="portfolio__container">
-        {
-          window.location.pathname !== "/ethereum" ?
-            <p>Coins on ethereum platform: {Math.round(coins.filter(p => Object.keys(p.platforms).includes("ethereum")).length / filteredCoins.length * 100)}%</p>
-          : ""
-        }
-        {filteredCoins.map(coin =>
-          <li key={coin.id}>
-            <h3>Symbol: {coin.symbol}</h3>
-            <p>Name: {coin.name}</p>
-            {
-              Object.keys(coin.platforms).map((key, i) => (
-                <p key={i}>
-                  <span>Platform: {key}</span>
-                </p>
-              ))
-            }
-          </li>
-        )}
+      <div className="coinlist-wrapper">
+        <div className="portfolio__header">
+          <a href="/#" onClick={() => setFilter("")}>
+            <button type="button" className="btn btn-primary">
+              All Coins
+            </button>
+          </a>
+          <a href="/ethereum" onClick={() => setFilter("ethereum")}>
+            <button type="button" className="btn btn-secondary">
+              Coins on Ethereum Platform
+            </button>
+          </a>
+        </div>
+        <div className="portfolio__container">
+          {
+            window.location.pathname !== "/ethereum" ?
+              <p>Coins on ethereum platform: {Math.round(coins.filter(p => Object.keys(p.platforms).includes("ethereum")).length / filteredCoins.length * 100)}%</p>
+            : ""
+          }
+
+          <BootstrapTable
+            keyField='id'
+            data={ filteredCoins }
+            columns={ columns }
+            pagination={ paginationFactory(options) }
+            filter={ filterFactory() } />
+        </div>
       </div>
     </>
   );
