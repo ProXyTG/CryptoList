@@ -10,13 +10,23 @@ interface ICoin {
   platforms: {
     ethereum: string
   };
-  filtered,
+}
+
+interface IFilteredCoin {
+  id: number;
+  symbol: string;
+  name: string;
+  platforms: {
+    ethereum: string
+  };
 }
 
 const defaultProps:ICoin[] = [];
+const filteredProps:IFilteredCoin[] = [];
 
 const App: React.SFC = () => {
   const [coins, setCoins]: [ICoin[], (coins: ICoin[]) => void] = React.useState(defaultProps);
+  const [filteredCoins, setFilteredCoins]: [IFilteredCoin[], (coins: IFilteredCoin[]) => void] = React.useState(filteredProps);
   const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
   const [error, setError]: [string, (error: string) => void] = React.useState("");
   const [filter, setFilter] = React.useState("all");
@@ -30,6 +40,7 @@ const App: React.SFC = () => {
     })
     .then(response => {
       setCoins(response.data);
+      setFilteredCoins(response.data)
       setLoading(false);
     })
     .catch(ex => {
@@ -40,16 +51,18 @@ const App: React.SFC = () => {
       setError(error);
       setLoading(false);
     });
+    setFilteredCoins(coins)
   }, []);
 
   React.useEffect(() => {
-    setCoins([]);
+    setFilteredCoins([]);
 
-    const filtered = coins.map(p => ({
-      ...p,
-      filtered: Object.keys(p.platforms).includes(filter),
-    }));
-    setCoins(filtered);
+    if(filter) {
+      const filtered = coins.filter(p => Object.keys(p.platforms).includes(filter));
+      setFilteredCoins(filtered);
+    } else {
+      setFilteredCoins(coins)
+    }
   }, [filter]);
 
   if (loading) {
@@ -70,8 +83,7 @@ const App: React.SFC = () => {
         </a>
       </div>
       <div className="portfolio__container">
-        {coins.map(coin =>
-          coin.filtered === true ?
+        {filteredCoins.map(coin =>
           <li key={coin.id}>
             <h3>Symbol: {coin.symbol}</h3>
             <p>Name: {coin.name}</p>
@@ -82,8 +94,7 @@ const App: React.SFC = () => {
                 </p>
               ))
             }
-            </li>
-          : ""
+          </li>
         )}
       </div>
     </>
