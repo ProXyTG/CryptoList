@@ -76,13 +76,18 @@ const App: React.SFC = () => {
           All
         </a>
         <a
-          href="/#ethereum"
+          href="/ethereum"
           onClick={() => setFilter("ethereum")}
         >
           Ethereum
         </a>
       </div>
       <div className="portfolio__container">
+        {
+          window.location.pathname !== "/ethereum" ?
+            <p>Percentage coins on ethereum platform: {Math.round(coins.filter(p => Object.keys(p.platforms).includes("ethereum")).length / filteredCoins.length * 100)}%</p>
+          : ""
+        }
         {filteredCoins.map(coin =>
           <li key={coin.id}>
             <h3>Symbol: {coin.symbol}</h3>
@@ -90,7 +95,7 @@ const App: React.SFC = () => {
             {
               Object.keys(coin.platforms).map((key, i) => (
                 <p key={i}>
-                  <span>Platfrom: {key}</span>
+                  <span>Platform: {key}</span>
                 </p>
               ))
             }
