@@ -49,6 +49,11 @@ const App: React.SFC = () => {
       text: 'NAME',
       sort: true
     },
+    {
+      dataField: 'platforms.ethereum',
+      text: 'PLATFORM ADDRESS',
+      sort: true
+    },
   ];
   const options = {
     paginationSize: 15,

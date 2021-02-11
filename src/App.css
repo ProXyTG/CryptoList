@@ -22,6 +22,10 @@
   vertical-align: middle;
 }
 
+.table tbody tr td {
+  overflow: scroll;
+}
+
 table thead tr th:nth-child(2) {
   display: flex;
   flex-direction: column;
